@@ -1,0 +1,2 @@
+Um deadlock é quando um programa tem múltiplas execuções que são bloqueadas
+indefinidamente, esperando umas pelas outras liberarem seus respectivos recursos.

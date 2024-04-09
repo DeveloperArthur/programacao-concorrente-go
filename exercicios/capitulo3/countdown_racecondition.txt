@@ -1,0 +1,23 @@
+Execute o detector de corrida do Go do arquivo countdown.go com: go run -race countdown.go
+O resultado contém uma race condition? Se isso acontecer, você pode explicar por que isso acontece?
+
+Resposta: Sim, há um race condition, a saída do terminal foi: Found 1 data race(s)
+mas os resultados não são inconsistentes, independente o quanto aumentamos o número
+justamente porque estamos usando o sleep, porque se deixamos os 2 sleeps com 1 segundo
+já conseguimos ver as inconsistencias... pode ser que o compilador leve isso em consideração
+ele ignora as sleeps e analisa se as threads se sobrepõem... ai ele vê que os dois estao
+sendo executados ao mesmo tempo, ao mesmo tempo que um escreve o outro lê, e isso é um possivel data race...
+
+Correção: Sua análise está correta! No código fornecido, há uma race condition devido
+ao acesso concorrente à variável count sem sincronização. Embora os resultados possam
+parecer consistentes devido ao uso de Sleep, o compilador do Go pode detectar a potencial
+race condition mesmo assim. A race condition ocorre porque a goroutine criada por go
+countdown(&count) está acessando e modificando a variável count enquanto a goroutine principal
+do main também está acessando count dentro do loop for count > 0. Se as duas goroutines estiverem
+em execução ao mesmo tempo, pode haver uma condição em que uma goroutine lê count antes que a outra
+termine de escrever nela, levando a resultados imprevisíveis. O fato de você não ver resultados
+inconsistentes imediatamente pode ser devido ao tempo de execução das goroutines. O compilador
+pode otimizar o código de forma que as duas goroutines não se sobreponham completamente, evitando
+a race condition aparente. No entanto, isso não garante que a race condition não possa ocorrer
+em diferentes condições de execução ou em diferentes sistemas. Por isso, é importante corrigir race
+conditions mesmo que os resultados pareçam consistentes em certas condições de teste.

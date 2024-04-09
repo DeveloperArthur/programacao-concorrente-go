@@ -1,0 +1,3 @@
+Essas são as duas principais maneiras de
+implementar a comunicação entre nossas execuções:
+sharing memory e messaging passing

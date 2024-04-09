@@ -1,0 +1,20 @@
+Em um artigo de 1971 intitulado “System Deadlocks”, Coffman et al. ilustram
+quatro condições que devem estar presentes para que ocorram deadlocks:
+
+- Wait for condition(Aguarde a condição): as execuções que contêm um ou mais recursos podem
+  solicitar mais recursos.
+  (inter_thread_communication/sharing_memory/deadlock/signalbeforewait_deadlock.go,
+  inter_thread_communication/messaging_passsing/channel/deadlock/nosender_deadlock.go,
+  inter_thread_communication/messaging_passsing/channel/deadlock/noreceiver_deadlock.go)
+
+- Circular wait(Espera circular): Existe uma cadeia circular de duas ou mais execuções
+  em que cada um é bloqueado enquanto espera que um recurso seja
+  liberado na próxima execução da cadeia.
+  (advanced_concurrency/more_deadlocks/sharing_memory/redandblue.go,
+  advanced_concurrency/more_deadlocks/sharing_memory/bankaccount_deadlock.go)
+
+- No preemption(Sem preempção): Os recursos retidos por uma execução não podem ser
+  retirados. Somente a execução que detém os recursos pode liberá-los.
+
+- Mutual exclusion(Exclusão mútua): Cada recurso do sistema está sendo usado por uma
+  execução ou está livre.

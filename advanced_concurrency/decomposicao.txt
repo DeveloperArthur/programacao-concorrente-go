@@ -1,0 +1,20 @@
+Como podemos converter um programa ou algoritmo para que ele possa ser
+executado com mais eficiência usando programação concorrente? A decomposição é o
+processo de subdividir um programa em muitas tarefas e reconhecer quais dessas
+tarefas podem ser executadas concorrentemente. Vamos escolher um exemplo da vida
+real para ver como funciona a decomposição.
+
+A decomposição de tarefas ocorre quando pensamos nas diversas ações
+em nosso programa que podem ser executadas em paralelo.
+Na decomposição de tarefas, fazemos a pergunta: “Quais são as diferentes
+ações paralelas que podemos realizar para realizar o trabalho mais
+rapidamente?”
+
+Também podemos decompor nosso programa pensando em como os dados
+fluem através dele. Podemos, por exemplo, dividir os dados de entrada
+e alimentálos para múltiplas execuções paralelas
+
+Isso é conhecido
+como decomposição de dados, onde fazemos a pergunta: “Como podemos
+organizar os dados em nosso programa para que possamos executar mais
+trabalho em paralelo?
