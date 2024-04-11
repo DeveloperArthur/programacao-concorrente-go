@@ -1,7 +1,13 @@
 /* imagine 3 goroutines, 2 de leitura e 1 de gravação
 enquanto a goroutine de gravação trabalha, as outras duas esperam
 quando as goroutine de leitura trabalham, a goroutine de gravação espera
-é isso que o mutex de leitura e escrita nos dá */
+é isso que o mutex de leitura e escrita nos dá 
+
+O RWMutex em si é responsável por controlar o acesso concorrente ao valor que
+ele protege. Ele permite que várias threads façam operações de leitura ao mesmo 
+tempo (read), mas garante que apenas uma thread por vez possa fazer uma operação 
+de escrita (write), bloqueando as outras threads que tentarem fazer uma escrita 
+simultaneamente. */
 
 package main
 
