@@ -1,0 +1,63 @@
+Algumas soluções para controle de concorrência em aplicações distribuidas
+
+LOCK OTIMISTA:
+
+Existem várias estratégias, a mais conhecida é adicionar uma coluna 'version' na sua tabela com valor 0
+supondo que a regra de negócio tenha o processo READ-PROCESS-WRITE, quando for fazer o WRITE, no update
+sete o version como 1, e no WHERE coloque version = 0
+
+Porque se outra thread tiver executado o update milisegundos depois, essa vai estourar erro
+não vai retornar o registro, porque o registro com version 0 não existe mais, foi atualizado 
+para o valor 1, e esse version vem do banco, na proxima atualização update vai setar 2 com 
+where version = 1 e assim por diante...
+
+A característica do Lock Otimista é que ele deixa a aplicação concorrer
+deixa executar o select, update ao mesmo tempo... mas ele garante que 
+não vai ter inconsistencia de dados por causa do controle de versão
+
+Obs: Lock Otimista é recomendado para apps com baixo nível de concorrência
+
+---
+
+LOCK PESSIMISTA:
+
+Utilizar mutex, mutex não bloqueante, mutex read-write, variaveis de condição, wait groups
+barries, atomics, channels, pipeline, fanin/fanout, select...
+
+A característica do Lock Pessimista é que ele não deixa a aplicação concorrer
+ele enfileira as threads e faz executarem 1 de cada vez
+
+Obs: Lock Otimista é recomendado para apps com alto nivel de concorrencia
+
+---
+
+LOCK DISTRIBUIDO:
+
+Nessa estratégia cada instância deve consultar o Lock Provider (Redis, Mongo, Zookeeper etc) 
+antes de executar sua respectiva lógica, para tentar adquirir o lock
+
+Com Redis por exemplo, nós podemos fazer a seguinte lógica de adquirir o lock: vamos ter uma 
+função onde tentamos gravar uma key usando a função NX (tem que ser atômico), a função NX 
+seta apenas se a key não existir, se já existir ele devolve erro
+
+Se a instância conseguir gravar a key, então adquiriu o lock, pode executar sua lógica normalmente, 
+quando outra instância tentar adquirir o lock, não vai conseguir, porque outra instância já adquiriu 
+o lock, ou seja, já inseriu a chave única
+
+Após executar a lógica, pode chamar a função de unlock que simplesmente deleta a key do Redis
+
+E no caso de alguma instância que não conseguir obter o lock, ela pode esperar, desistir ou dormir
+o tratamento do caso desse erro depende da lógica da sua aplicação. Você pode querer esperar ou seguir 
+um caminho alternativo em caso de erro.
+
+--
+
+OUTRAS SOLUÇÕES
+
+Uma outra forma de impedir que Race Conditions aconteçam em um cenario de aplicações distribuidas 
+seria configurar o Nginx para redirecionar todas as requests do endpoint de escrita para uma instância 
+específica, enquanto todas as instâncias recebem requests de leitura, mas a lógica do endpoint de 
+escrita deve conter alguma estratégia de Lock Pessimista...
+
+Utilizar Procedures em bancos de dados também ajudariam a impedir que Race Conditions aconteçam em 
+um cenario de aplicações distribuidas... (https://github.com/DeveloperArthur/rinha-de-backend-2024?tab=readme-ov-file#estrat%C3%A9gia-para-controle-de-concorr%C3%AAncia)
